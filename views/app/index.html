@@ -1,0 +1,662 @@
+{{extend 'layout.html'}}
+
+<div class="row">
+  <div class="col-md-12">
+    {{if 'message' in globals():}}
+      <h2>{{=message}}</h2>
+    {{pass}}
+    {{if not data:}}
+      <div id="wrapper">
+        <div id="content-wrapper" style="margin-top: 50px;" class="d-flex flex-column">
+          <div id="content">
+            <div class="container-fluid">
+              <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 id="headAnaly" class="h3 mb-0 text-gray-800">Please upload a log file for analysing</h1>
+                <button onclick="$('#fileSelect').trigger('click');" class="btn btn-sm btn-primary shadow-sm"><i class="fas fa-upload  fa-sm text-white-50"></i> Choose File</button>
+                <input hidden type="file" class="upload" name="upload" id="fileSelect" required>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="divAnalysing" class="center container-fluid">
+        <img  src="{{=URL('static','images/loading.gif')}}">
+        <h3 id="headAnaly" class="h3 mb-0 text-gray-800">This can be take some time depending of the size of the log file.</h3>
+      </div>
+
+      <script type="text/javascript">
+
+        $("#divAnalysing").hide();
+        $('#fileSelect').change(function() {
+            file = $("#fileSelect")[0].files[0]
+            console.log(file)
+
+            var formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                type: "POST",
+                dataType: "html",
+                url: "{{=URL('uploadFile')}}",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                  console.log(data)
+                  $("#headAnaly").text("Analysing...")
+                  $("#divAnalysing").show();
+                  window.location.replace("{{=URL('index', args=1)}}");
+                }
+            });
+        });
+      </script>
+
+    {{else:}}
+      <body id="page-top">
+        <div id="wrapper">
+          <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                  <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                  <a href="https://startbootstrap.github.io/startbootstrap-sb-admin-2/#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                </div>
+                <div class="row">
+                  <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                      <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Bytes for Hit</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{=format(metrics['HitMisBytes']['Hit'], ',')}} Bytes</div>
+                          </div>
+                          <div class="col-auto">
+                            <i class="fas fa-check fa-2x text-info-300"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                      <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Bytes for Miss</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{=format(metrics['HitMisBytes']['Miss'], ',')}} Bytes</div>
+                          </div>
+                          <div class="col-auto">
+                            <i class="fas fa-times fa-2x text-info-300"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                      <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Success Connections</div>
+                            <div class="row no-gutters align-items-center">
+                              <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{=format(metrics['successFailed']['200'], ',')}} Conns.</div>
+                              </div>
+                              <div class="col">
+                                <div class="progress progress-sm mr-2">
+                                  {{
+                                    totalValue = (metrics['successFailed']['200'] / total) * 100
+                                  }}
+                                  <div class="progress-bar bg-info" role="progressbar" style="width: {{=totalValue}}%" aria-valuenow="{{=totalValue}}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <i class="fas fa-upload fa-2x text-info-300"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Pending Requests Card Example -->
+                  <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                      <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Registers analyced</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{=format(total, ',')}} Registers</div>
+                          </div>
+                          <div class="col-auto">
+                            <i class="fas fa-file-text text-info-300"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Content Row -->
+
+                <div class="row">
+
+                  <!-- Area Chart -->
+                  <div class="col-xl-12 col-lg-12">
+                    <div class="card shadow mb-4">
+                      <div class="card-body">
+
+                        <div class="mt-4 text-center small">
+                          <span class="mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><h4>SC Bytes</h4></div>
+                          </span>
+                        </div>
+
+                        <div class="chart-area"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                          <canvas id="bytesChart" style="display: block; width: 877px; height: 320px;" width="877" height="320" class="chartjs-render-monitor"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-xl-12 col-lg-12">
+                    <div class="card shadow mb-4">
+                      <div class="card-body">
+
+                        <div class="mt-4 text-center small">
+                          <span class="mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"><h4>Time Taken</h4></div>
+                          </span>
+                        </div>
+
+                        <div class="chart-area"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                          <canvas id="timeTaken" style="display: block; width: 877px; height: 320px;" width="877" height="320" class="chartjs-render-monitor"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Pie Chart -->
+
+
+                  <div class="col-xl-3 col-lg-3">
+                    <div class="card shadow mb-4">
+                      <div class="card border-left-primary shadow h-100 py-2 card-body">
+                        <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                          <canvas id="resultType" width="406" height="245" class="chartjs-render-monitor" style="display: block; width: 406px; height: 245px;"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                          <span class="mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">URI stem</div>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-lg-3">
+                    <div class="card shadow mb-4">
+                      <div class="card border-left-success shadow h-100 py-2 card-body">
+                        <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                          <canvas id="ipUse" width="406" height="245" class="chartjs-render-monitor" style="display: block; width: 406px; height: 245px;"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                          <span class="mr-2">
+                            
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">IPs Connections</div>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-lg-3">
+                    <div class="card shadow mb-4">
+                      <div class="card border-left-info shadow h-100 py-2 card-body">
+                        <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                          <canvas id="contentType" width="406" height="245" class="chartjs-render-monitor" style="display: block; width: 406px; height: 245px;"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                          <span class="mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Content Type</div>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-lg-3">
+                    <div class="card shadow mb-4">
+                      <div class="card border-left-warning shadow h-100 py-2 card-body">
+                        <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                          <canvas id="edgeLocation" width="406" height="245" class="chartjs-render-monitor" style="display: block; width: 406px; height: 245px;"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                          <span class="mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Edge Location</div>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered" id="regTable" width="100%" style="zoom: 70%" cellspacing="0">
+                        <thead>
+                          <tr>
+                            <th>date</th>
+                            <th>time</th>
+                            <th>x-edge-location</th>
+                            <th>sc-bytes</th>
+                            <th>c-ip</th>
+                            <th>cs-method</th>
+                            <th>cs(Host)</th>
+                            <th>cs-uri-stem</th>
+                            <th>sc-status</th>
+                            <th>cs(Referer)</th>
+                            <th>cs(User-Agent)</th>
+                            <th>cs-uri-query</th>
+                            <th>cs(Cookie)</th>
+                            <th>x-edge-result-type</th>
+                            <th>x-edge-request-id</th>
+                            <th>x-host-header</th>
+                            <th>cs-protocol</th>
+                            <th>cs-bytes</th>
+                            <th>time-taken</th>
+                            <th>x-forwarded-for</th>
+                            <th>ssl-protocol</th>
+                            <th>ssl-cipher</th>
+                            <th>x-edge-response-result-type</th>
+                            <th>cs-protocol-version</th>
+                            <th>fle-status</th>
+                            <th>fle-encrypted-fiel</th>
+                            <th>c-port</th>
+                            <th>time-to-first-byte</th>
+                            <th>x-edge-detailed-result-type</th>
+                            <th>sc-content-type</th>
+                            <th>sc-content-len</th>
+                            <th>sc-range-start</th>
+                            <th>sc-range-end</th>
+                          </tr>
+                        </thead>
+                        <tfoot>
+                          <tr>
+                            <th>time</th>
+                            <th>x-edge-location</th>
+                            <th>sc-bytes</th>
+                            <th>c-ip</th>
+                            <th>cs-method</th>
+                            <th>cs(Host)</th>
+                            <th>cs-uri-stem</th>
+                            <th>sc-status</th>
+                            <th>cs(Referer)</th>
+                            <th>cs(User-Agent)</th>
+                            <th>cs-uri-query</th>
+                            <th>cs(Cookie)</th>
+                            <th>x-edge-result-type</th>
+                            <th>x-edge-request-id</th>
+                            <th>x-host-header</th>
+                            <th>cs-protocol</th>
+                            <th>cs-bytes</th>
+                            <th>time-taken</th>
+                            <th>x-forwarded-for</th>
+                            <th>ssl-protocol</th>
+                            <th>ssl-cipher</th>
+                            <th>x-edge-response-result-type</th>
+                            <th>cs-protocol-version</th>
+                            <th>fle-status</th>
+                            <th>fle-encrypted-fiel</th>
+                            <th>c-port</th>
+                            <th>time-to-first-byte</th>
+                            <th>x-edge-detailed-result-type</th>
+                            <th>sc-content-type</th>
+                            <th>sc-content-len</th>
+                            <th>sc-range-start</th>
+                            <th>sc-range-end</th>
+                          </tr>
+                        </tfoot>
+                        <tbody>
+                          {{for item in range(100):}}
+                          <tr>
+                            {{for itemTD in registers[item]:}}
+                              <td>{{=itemTD}}</td>
+                            {{pass}}
+                          </tr>
+                          {{pass}}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <footer class="sticky-footer bg-white">
+              <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                  <span>Copyright © Your Website 2020</span>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </div>
+
+        <script src="{{=URL('static','js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{=URL('static','js/jquery.easing.min.js')}}"></script>
+
+        <script src="{{=URL('static','js/sb-admin-2.min.js')}}"></script>
+        <script src="{{=URL('static','js/datatables.min.js')}}"></script>
+
+        <script src="{{=URL('static','js/Chart.min.js')}}"></script>
+
+
+
+        <script type="text/javascript">
+          $('#regTable').DataTable();
+
+          var dynamicColors = function() {
+            var colors = []
+            for (var i = 0; i < {{=total}}; i++) {
+              var r = Math.floor(Math.random() * 255);
+              var g = Math.floor(Math.random() * 255);
+              var b = Math.floor(Math.random() * 255);
+              colors[i] = "rgb(" + r + "," + g + "," + b + ")";
+            }
+            return colors;
+          }
+
+          function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite(+number) ? 0 : +number,
+              prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+              sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+              dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+              s = '',
+              toFixedFix = function(n, prec) {
+                var k = Math.pow(10, prec);
+                return '' + Math.round(n * k) / k;
+              };
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+              s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+              s[1] = s[1] || '';
+              s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+          }
+
+          COLORS = dynamicColors();
+          var ipsInfo = [
+            {{for item in metrics['bytesChange']:}}
+              '{{=item[2]}}',
+            {{pass}}
+          ]
+
+          var ctx = document.getElementById("bytesChart");
+          var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: [
+                {{for item in metrics['bytesChange']:}}
+                  '{{=item[0]}}',
+                {{pass}}
+              ],
+              datasets: [{
+                label: "Bytes",
+                lineTension: 0.1,
+                backgroundColor: "rgba(78, 115, 223, 0.05)",
+                borderColor: "rgba(78, 115, 223, 1)",
+                pointRadius: 1,
+                pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointBorderColor: "rgba(78, 115, 223, 1)",
+                pointHoverRadius: 1,
+                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                pointHitRadius: 10,
+                pointBorderWidth: 1,
+                data: [
+                  {{for item in metrics['bytesChange']:}}
+                    {{=item[1]}},
+                  {{pass}}
+                ],
+              }],
+            },
+            options: {
+              maintainAspectRatio: false,
+              layout: {
+                padding: {
+                  left: 10,
+                  right: 25,
+                  top: 25,
+                  bottom: 0
+                }
+              },
+              legend: {
+                display: false
+              },
+              tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                mode: 'index',
+                caretPadding: 10,
+                callbacks: {
+                  label: function(tooltipItem, chart) {
+                    var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                    return number_format(tooltipItem.yLabel) + ' Bytes on '+ ipsInfo[tooltipItem.datasetIndex];
+                  }
+                }
+              }
+            }
+          });
+
+
+          var ctx = document.getElementById("timeTaken");
+          var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: [
+                {{for item in metrics['timeTaken']:}}
+                  '{{=item[0]}}',
+                {{pass}}
+              ],
+              datasets: [{
+                label: "sm",
+                lineTension: 0.1,
+                backgroundColor: "rgba(223, 115, 78, 0.05)",
+                borderColor: "rgba(223, 115, 78, 1)",
+                pointRadius: 1,
+                pointBackgroundColor: "rgba(223, 115, 78, 1)",
+                pointBorderColor: "rgba(223, 115, 78, 1)",
+                pointHoverRadius: 1,
+                pointHoverBackgroundColor: "rgba(223, 115, 78, 1)",
+                pointHoverBorderColor: "rgba(223, 115, 78, 1)",
+                pointHitRadius: 10,
+                pointBorderWidth: 1,
+                data: [
+                  {{for item in metrics['timeTaken']:}}
+                    {{=item[1]}},
+                  {{pass}}
+                ],
+              }],
+            },
+            options: {
+              maintainAspectRatio: false,
+              layout: {
+                padding: {
+                  left: 10,
+                  right: 25,
+                  top: 25,
+                  bottom: 0
+                }
+              },
+              legend: {
+                display: false
+              },
+              tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                mode: 'index',
+                caretPadding: 10,
+                callbacks: {
+                  label: function(tooltipItem, chart) {
+                    var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                    return tooltipItem.yLabel + ' ms on '+ ipsInfo[tooltipItem.datasetIndex];
+                  }
+                }
+              }
+            }
+          });
+
+          var ctx = document.getElementById("resultType");
+          var resultType = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: [
+                  {{for item in metrics['resultType']:}}
+                    '{{=item[0]}}',
+                  {{pass}}
+              ],
+              datasets: [{
+                data: [
+                  {{for item in metrics['resultType']:}}
+                    {{=item[1]}},
+                  {{pass}}
+                ],
+                backgroundColor: COLORS,
+                hoverBackgroundColor: COLORS,
+              }],
+            },
+            options: {
+              maintainAspectRatio: false,
+              
+              legend: {
+                display: false
+              }
+            },
+          });
+
+          var ctx = document.getElementById("ipUse");
+          var ipUse = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: [
+                  {{for item in metrics['ipUse']:}}
+                    '{{=item[0]}}',
+                  {{pass}}
+              ],
+              datasets: [{
+                data: [
+                  {{for item in metrics['ipUse']:}}
+                    {{=item[1]}},
+                  {{pass}}
+                ],
+                backgroundColor: COLORS,
+                hoverBackgroundColor: COLORS,
+              }],
+            },
+            options: {
+              maintainAspectRatio: false,
+              
+              legend: {
+                display: false
+              }
+            },
+          });
+
+          var ctx = document.getElementById("contentType");
+          var contentType = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: [
+                  {{for item in metrics['contentType']:}}
+                    '{{=item[0]}}',
+                  {{pass}}
+              ],
+              datasets: [{
+                data: [
+                  {{for item in metrics['contentType']:}}
+                    {{=item[1]}},
+                  {{pass}}
+                ],
+                backgroundColor: COLORS,
+                hoverBackgroundColor: COLORS,
+              }],
+            },
+            options: {
+              maintainAspectRatio: false,
+              
+              legend: {
+                display: false
+              }
+            },
+          });
+
+          var ctx = document.getElementById("edgeLocation");
+          var edgeLocation = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: [
+                  {{for item in metrics['edgeLocation']:}}
+                    '{{=item[0]}}',
+                  {{pass}}
+              ],
+              datasets: [{
+                data: [
+                  {{for item in metrics['edgeLocation']:}}
+                    {{=item[1]}},
+                  {{pass}}
+                ],
+                backgroundColor: COLORS,
+                hoverBackgroundColor: COLORS,
+              }],
+            },
+            options: {
+              maintainAspectRatio: false,
+              
+              legend: {
+                display: false
+              }
+            },
+          });
+
+
+          
+
+        </script>
+        
+        </body>
+    {{pass}}
+  </div>
+</div>
+
+
+
+
+

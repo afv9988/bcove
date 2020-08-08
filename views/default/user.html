@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WMS | Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{{=URL('static','images/favicon.png')}}" type="image/x-icon">
+
+    <link href="{{=URL('static', 'login/css/util.css')}}" rel="stylesheet"/>
+    <link href="{{=URL('static', 'login/css/main.css')}}" rel="stylesheet"/>
+
+    {{
+    response.files.insert(1,URL('static','css/bootstrap.min.css'))
+    response.files.insert(3,URL('static','css/jquery-ui.css'))
+    #Incluido para el template-->    
+    #Theme style -->
+      response.files.insert(5,URL('static','css/font-awesome.css'))
+    #Incluido para el template-->
+    }}
+
+    {{include 'web2py_ajax.html'}}
+</head>
+<style>
+    div.flash {
+            font-weight: bold;
+            display: none;
+            position: fixed;
+            padding: 10px;
+            top: 48px;
+            right: 250px;
+            min-width: 280px;
+            opacity: 0.95;
+            vertical-align: middle;
+            cursor: pointer;
+            color: #fff;
+            background-color: #201e1f;
+            -o-border-radius: 8px;
+            -moz-border-radius: 8px;
+            background-image: -o-linear-gradient(top,#222,#000);
+            background-image: -moz-linear-gradient(90deg, #222, #000);
+            background-image: linear-gradient(top,#222,#000);
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            z-index: 2000;
+    }
+
+    div.flash #closeflash{color:inherit; float:right; margin-left:15px;}
+    .ie-lte7  div.flash #closeflash
+    {color:expression(this.parentNode.currentStyle['color']);float:none;position:absolute;right:4px;}
+
+    div.flash:hover { opacity:0.25; }
+</style>
+
+<body style="background-color: #999999;">
+    
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="login100-more" style="background-image: url('{{=URL('static', 'login/images/5.jpg')}}');"></div>
+
+            <div class="wrap-login100 p-l-50 p-r-50 p-t-72 p-b-50">
+                    <span class="login100-form-title p-b-59 text-center">
+                        <img src="{{=URL('static', 'login/images/logot.png')}}" height="100vh">
+                        <div class="flash">{{=response.flash or ''}}</div>
+                    </span>
+
+                    <span id="showLoginAn" hidden class="login100-form-title p-b-59 text-center" hidden>
+                        <img src="{{=URL('static', 'images/load.gif')}}" height="250vh">
+                        <h3>Acceso WMS</h3>
+                    </span>
+
+                    
+                    {{if not request.args(0) == "not_authorized":}}
+
+                        {{=form.custom.begin}}
+                            <div id="showCamp" class="login_form">
+                                <div class="wrap-input100 validate-input" data-validate = "Ingrese un correo valido: xxxxx@WMS.com.mx">
+                                    <span class="label-input100">Usuario o Correo</span>
+                                    <input class="input100" type="text" id="username" name="username" placeholder="Usuario o Correo">
+                                    <span class="focus-input100"></span>
+                                </div>
+
+                                <div class="wrap-input100 validate-input" data-validate = "Ingrese su contraseña">
+                                    <span class="label-input100">Contraseña</span>
+                                    <input class="input100" type="password" id="password" name="password" placeholder="*************">
+                                    <span class="focus-input100"></span>
+                                </div>
+
+                                <div class="container-login100-form-btn">
+                                    <div class="wrap-login100-form-btn">
+                                        <div class="login100-form-bgbtn"></div>
+                                        <button type="submit"  class="login100-form-btn">
+                                            Solicitar Acceso
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        {{=form.custom.end}}
+
+                    {{else:}}
+                        {{redirect(URL('usuarios', 'redireccionamiento'))}}
+                    {{pass}}
+            </div>
+        </div>}
+    </div>
+    
+    <script src="{{=URL('static','js/jquery.js')}}"></script>
+    <script src="{{=URL('static','login/js/main.js')}}"></script>
+    <script src="{{=URL('static','js/web2py_bootstrap4.js')}}"></script>
+
+</body>
+</html>
+
+<script type="text/javascript">
+    $(".login100-form-btn").click(function(e) {
+      $("#showLoginAn").css({ display: 'inline' });
+      $("#showCamp").css({ display: 'none' });
+    });
+</script>
