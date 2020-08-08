@@ -1,0 +1,49 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: w2p
+  namespace: default
+  selfLink: /api/v1/namespaces/default/services/w2p
+  uid: 1a7c7b2e-aae7-4eda-8d0f-d6532361ec84
+  creationTimestamp: '2020-08-08T16:44:50Z'
+  labels:
+    k8s-app: w2p
+  managedFields:
+    - manager: dashboard
+      operation: Update
+      apiVersion: v1
+      time: '2020-08-08T16:44:50Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:k8s-app': {}
+        'f:spec':
+          'f:externalTrafficPolicy': {}
+          'f:ports':
+            .: {}
+            'k:{"port":80,"protocol":"TCP"}':
+              .: {}
+              'f:name': {}
+              'f:port': {}
+              'f:protocol': {}
+              'f:targetPort': {}
+          'f:selector':
+            .: {}
+            'f:k8s-app': {}
+          'f:sessionAffinity': {}
+          'f:type': {}
+spec:
+  ports:
+    - name: tcp-80-80-gm2kc
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    k8s-app: w2p
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+status:
+  loadBalancer: {}
