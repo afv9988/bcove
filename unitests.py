@@ -14,7 +14,7 @@ assert None == METRICS
 
 
 '''
-	Sample of error file, the Field data starts in line 0 instead of 1
+	Verification of existing file with analysis and comparation of metrics
 '''
 
 PATH = 'uploads/SampleFile-1.txt'
@@ -32,6 +32,9 @@ assert 'ipUse' 			in METRICS
 assert len(REGISTERS)-1 in REGISTERS
 
 
+'''
+	Simulation of complete proccess, uploading a log file and making an analysis
+'''
 
 PATH = 'uploads/SampleUpload-1.txt'
 
@@ -56,6 +59,11 @@ assert 'contentType' 	in METRICS
 assert 'timeTaken' 		in METRICS
 assert 'ipUse' 			in METRICS
 assert len(REGISTERS)-1 in REGISTERS
+
+
+'''
+	Adding a wrong line to existing log file and detecting the status error
+'''
 
 
 file = open(PATH, "a")
