@@ -38,8 +38,8 @@ spec:
   ports:
     - name: tcp-80-80-gm2kc
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 443
+      targetPort: 443
   selector:
     k8s-app: w2p
   type: LoadBalancer

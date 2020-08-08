@@ -4,19 +4,24 @@ from datetime import datetime
 
 
 
-'''##function called when enter to the main URL, the can have an argumen
-	@args info: filename of file to be analyced
+'''##Function called when enter to the main URL, the can have 2 arguments
+	@args DATA: filename of file to be analyced
+	@args API: 	flag for determine if the return state will be showed in a Front End or will return a JSON
 	if the function does't have arguments, the view only will show a button for select a file to upload
 '''
 def index():
 	DATA = request.args(0)
+	API = request.args(1) == "API"
 	if not DATA: return dict(status = None, data = None)
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
 	DATA, REGISTERS, METRICS, STATUS = analyceLogFile(PATH, {}, {}, {'HitMisBytes': {}})
 
+
 	if STATUS == "OK":
+		if API: return response.json({"metrics":  METRICS})
 		return dict(data = DATA, metrics = METRICS, registers = REGISTERS, total = len(REGISTERS))
 	else:
+		if API: response.json({"data": []})
 		return dict(status = STATUS, data = None)
 
 '''##Function for show the log file on a table
@@ -29,13 +34,17 @@ def logvisor():
 	
 
 '''##Function allows to call the saveFileOnLocal on frontend with a POST request
+
+	@ToDo:
+		Verify is if better manage more than 1 file per user
+		#now = datetime.now()
+		#timestamp = datetime.timestamp(now)
+		#filename=request.vars.file.filename
+
 '''
 def uploadFile():
 	file = request.vars.file.file
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
-	#now = datetime.now()
-	#timestamp = datetime.timestamp(now)
-	#filename=request.vars.file.filename
 
 	STATUS = saveFileOnLocal(PATH, file)
 
@@ -43,18 +52,23 @@ def uploadFile():
 	
 '''##Function Main function of analysis of data, this organizate the data on 4 main dictionaries:
 
-	DATA				Save the key coincidences arround the log file and add in a collection of they identifiers
-						this help to access to any value of the coincidence i.e.
+	REGISTERS			Save all the registers of the file and asign a index in the same order of has read i.e.
+
+						REGISTERS[1] = ["2020-06-14", "23:02:59", "LAX50-C1", ...]
+
+	DATA				Save the coincidences arround the log file as key and add in a collection the index of
+						registers with same value, this help to access to any value of the coincidence i.e.
 						
 						DATA['sc-content-type'] is a collection of registers whit the same 'sc-content-type' as
 
-						'application/dash+xml': [202, 220, ...], 'video/f4f': [246, 1002, ...], 'video/mp4': [875, 1118, ...], 'image/jpg': [979, 2141, ...], 'application/f4m+xml': [2060], 'application/x-mpegURL': [3676, 3956, 4268]}
-							
+						'application/dash+xml': [202, 220, ...], 'video/f4f': [246, 1002, ...], 'video/mp4': [875, 1118, ...],
+						'image/jpg': [979, 2141, ...], 'application/f4m+xml': [2060], 'application/x-mpegURL': [3676, 3956, ...]}
+
+						Then, you can access to any register with value 'application/dash+xml' as:
+
+						REGISTERS[ DATA['sc-content-type']['application/dash+xml'][0] ] return all the information of line 202
 
 
-
-
-	REGISTERS			Save all the registers of the file and asign a index in the same order of has read
 	METRICS				Defined for different specific metrics calculated in analysis loop
 
 	##args:
