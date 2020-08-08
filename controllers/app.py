@@ -10,28 +10,27 @@ from datetime import datetime
 '''
 def index():
 	DATA = request.args(0)
-	if not DATA: return dict(data = None)
+	if not DATA: return dict(status = None, data = None)
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
-	DATA, REGISTERS, METRICS = analyceLogFile(PATH, {}, {}, {'HitMisBytes': {}})
-	return dict(data = DATA, metrics = METRICS, registers = REGISTERS, total = len(REGISTERS))
+	DATA, REGISTERS, METRICS, STATUS = analyceLogFile(PATH, {}, {}, {'HitMisBytes': {}})
+
+	if STATUS == "OK":
+		return dict(data = DATA, metrics = METRICS, registers = REGISTERS, total = len(REGISTERS))
+	else:
+		return dict(status = STATUS, data = None)
+	
 
 
 def uploadFile():
-	filename=request.vars.file.filename
 	file = request.vars.file.file
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
 	#now = datetime.now()
 	#timestamp = datetime.timestamp(now)
+	#filename=request.vars.file.filename
 
-	try:
-		copyFile = open(PATH,'wb+')
-		shutil.copyfileobj(file, copyFile)
-		copyFile.close()
-	except Exception as e:
-		return response.json({'status': 2})
+	STATUS = saveFileOnLocal(PATH, file)
 
-	#session.flash = "File uploaded"
-	return response.json({'status':  1})
+	return response.json({'status': STATUS})
 	
 '''
 Args:
@@ -49,11 +48,19 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 		This loop convert the second line of the log file in the keys of DATA dictionary,
 		then, colums will have the fiels name in order to be called with the index in order of aparition
 	'''
+
+	if not "#Fields:" in fieldLine[1]:
+		return (None, None, None, "NO_VALID_FILE")
+
 	DATA = {item:dict() for item in fieldLine[1][len("#Fields:")+1:].split(" ")}
 	colums = list(DATA.keys())
 
 	for nLine, line in enumerate(fieldLine[2:]):
 		line = line.replace('\n', '').split("\t")
+
+		if not len(line) == len(colums):
+			return (None, None, None, "COLUMS_SIZE_NOT_MATCH")
+
 		for index, item in enumerate(line):
 			if item == "-": item = "Undefined"
 			REGISTERS[nLine] = line
@@ -84,4 +91,17 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 	METRICS['csMethod'] = [(item, len(DATA['cs-protocol-version'][item])) for item in DATA['cs-protocol-version']]
 	METRICS['csMethod'].sort(key=lambda x: x[1])
 
-	return (DATA, REGISTERS, METRICS)
+	return (DATA, REGISTERS, METRICS, "OK")
+
+
+def saveFileOnLocal(PATH, file):
+
+	try:
+		copyFile = open(PATH,'wb+')
+		shutil.copyfileobj(file, copyFile)
+		copyFile.close()
+	except Exception as e:
+		return str(e)
+
+	#session.flash = "File uploaded"
+	return "OK"

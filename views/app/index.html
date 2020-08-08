@@ -11,7 +11,13 @@
           <div id="content">
             <div class="container-fluid">
               <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 id="headAnaly" class="h3 mb-0 text-gray-800">Please upload a log file for analysing</h1>
+
+                {{if status == "NO_VALID_FILE":}}
+                  <h1 id="headAnaly" class="h3 mb-0 text-gray-800">This File cane be analyced, please try with another File</h1>
+                {{else:}}
+                  <h1 id="headAnaly" class="h3 mb-0 text-gray-800">Please upload a log file for analysing</h1>
+                {{pass}}
+
                 <button onclick="$('#fileSelect').trigger('click');" class="btn btn-sm btn-primary shadow-sm"><i class="fas fa-upload  fa-sm text-white-50"></i> Choose File</button>
                 <input hidden type="file" class="upload" name="upload" id="fileSelect" required>
               </div>
@@ -51,7 +57,6 @@
             });
         });
       </script>
-
     {{else:}}
       <body id="page-top">
         <div id="wrapper">
