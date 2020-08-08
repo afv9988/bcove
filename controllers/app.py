@@ -1,7 +1,7 @@
 #@auth.requires_login()
 import shutil
 from datetime import datetime
-PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/'
+
 
 
 '''## Main function called when enter to the main URL, the can have an argumen
@@ -10,16 +10,39 @@ PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/'
 '''
 def index():
 	DATA = request.args(0)
-
 	if not DATA: return dict(data = None)
+	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
+	DATA, REGISTERS, METRICS = analyceLogFile(PATH, {}, {}, {'HitMisBytes': {}})
+	return dict(data = DATA, metrics = METRICS, registers = REGISTERS, total = len(REGISTERS))
 
-	DATA = {}					#Will count the different coincidences arround the log file
-	REGISTERS = {}				#Save all the registers of the file and asign a index in the same order of has read
-	METRICS = {					#Defined for different specific metrics calculated in analysis loop
-		'HitMisBytes': {},
-	}
 
-	file = open(PATH + 'files.txt', 'r')
+def uploadFile():
+	filename=request.vars.file.filename
+	file = request.vars.file.file
+	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
+	#now = datetime.now()
+	#timestamp = datetime.timestamp(now)
+
+	try:
+		copyFile = open(PATH,'wb+')
+		shutil.copyfileobj(file, copyFile)
+		copyFile.close()
+	except Exception as e:
+		return response.json({'status': 2})
+
+	#session.flash = "File uploaded"
+	return response.json({'status':  1})
+	
+'''
+Args:
+
+Return:
+	DATA							Will count the different coincidences arround the log file
+	REGISTERS						Save all the registers of the file and asign a index in the same order of has read
+	METRICS							Defined for different specific metrics calculated in analysis loop
+'''
+def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
+	file = open(PATH, 'r')
 	fieldLine = file.readlines()
 
 	'''
@@ -61,24 +84,4 @@ def index():
 	METRICS['csMethod'] = [(item, len(DATA['cs-protocol-version'][item])) for item in DATA['cs-protocol-version']]
 	METRICS['csMethod'].sort(key=lambda x: x[1])
 
-
-	return dict(data = DATA, metrics = METRICS, registers = REGISTERS, total = len(REGISTERS))
-
-
-def uploadFile():
-	filename=request.vars.file.filename
-	file = request.vars.file.file
-
-	#now = datetime.now()
-	#timestamp = datetime.timestamp(now)
-
-	try:
-		copyFile = open(PATH + 'files.txt','wb+')
-		shutil.copyfileobj(file, copyFile)
-		copyFile.close()
-	except Exception as e:
-		return response.json({'status': 2})
-
-	#session.flash = "File uploaded"
-	return response.json({'status':  1})
-
+	return (DATA, REGISTERS, METRICS)
