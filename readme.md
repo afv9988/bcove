@@ -8,8 +8,8 @@ Main functions of the aplication are isolated from the framework specific functi
 
 ## Web based
 
-This project use Python3 and web2py framework for web and REST services, also is deploiment into a docker container: [Docker container](https://hub.docker.com/repository/docker/afdev9988/w2p) 
+This project use Python3 and web2py framework for web and REST services, is deploiment into a docker container: [Docker container](https://hub.docker.com/repository/docker/afdev9988/w2p) 
 
-CI -CD using TravisCI for run unitary tests trigguered o comit to this repository
+For CI -CD use TravisCI for run unitary tests trigguered in comit to this repository, you can seek the status [here](https://travis-ci.org/github/afv9988/bcove)
 
 ## Create files and folders

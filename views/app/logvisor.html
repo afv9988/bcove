@@ -1,0 +1,138 @@
+{{extend 'layout.html'}}
+
+<div class="row">
+  <div class="col-md-12">
+    {{if 'message' in globals():}}
+      <h2>{{=message}}</h2>
+    {{pass}}="page-top">
+        <div id="wrapper">
+          <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                  <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                </div>
+
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered" id="regTable" width="100%" style="zoom: 70%" cellspacing="0">
+                        <thead>
+                          <tr>
+                            <th>date</th>
+                            <th>time</th>
+                            <th>x-edge-location</th>
+                            <th>sc-bytes</th>
+                            <th>c-ip</th>
+                            <th>cs-method</th>
+                            <th>cs(Host)</th>
+                            <th>cs-uri-stem</th>
+                            <th>sc-status</th>
+                            <th>cs(Referer)</th>
+                            <th>cs(User-Agent)</th>
+                            <th>cs-uri-query</th>
+                            <th>cs(Cookie)</th>
+                            <th>x-edge-result-type</th>
+                            <th>x-edge-request-id</th>
+                            <th>x-host-header</th>
+                            <th>cs-protocol</th>
+                            <th>cs-bytes</th>
+                            <th>time-taken</th>
+                            <th>x-forwarded-for</th>
+                            <th>ssl-protocol</th>
+                            <th>ssl-cipher</th>
+                            <th>x-edge-response-result-type</th>
+                            <th>cs-protocol-version</th>
+                            <th>fle-status</th>
+                            <th>fle-encrypted-fiel</th>
+                            <th>c-port</th>
+                            <th>time-to-first-byte</th>
+                            <th>x-edge-detailed-result-type</th>
+                            <th>sc-content-type</th>
+                            <th>sc-content-len</th>
+                            <th>sc-range-start</th>
+                            <th>sc-range-end</th>
+                          </tr>
+                        </thead>
+                        <tfoot>
+                          <tr>
+                            <th>time</th>
+                            <th>x-edge-location</th>
+                            <th>sc-bytes</th>
+                            <th>c-ip</th>
+                            <th>cs-method</th>
+                            <th>cs(Host)</th>
+                            <th>cs-uri-stem</th>
+                            <th>sc-status</th>
+                            <th>cs(Referer)</th>
+                            <th>cs(User-Agent)</th>
+                            <th>cs-uri-query</th>
+                            <th>cs(Cookie)</th>
+                            <th>x-edge-result-type</th>
+                            <th>x-edge-request-id</th>
+                            <th>x-host-header</th>
+                            <th>cs-protocol</th>
+                            <th>cs-bytes</th>
+                            <th>time-taken</th>
+                            <th>x-forwarded-for</th>
+                            <th>ssl-protocol</th>
+                            <th>ssl-cipher</th>
+                            <th>x-edge-response-result-type</th>
+                            <th>cs-protocol-version</th>
+                            <th>fle-status</th>
+                            <th>fle-encrypted-fiel</th>
+                            <th>c-port</th>
+                            <th>time-to-first-byte</th>
+                            <th>x-edge-detailed-result-type</th>
+                            <th>sc-content-type</th>
+                            <th>sc-content-len</th>
+                            <th>sc-range-start</th>
+                            <th>sc-range-end</th>
+                          </tr>
+                        </tfoot>
+                        <tbody>
+                          {{for item in registers:}}
+                          <tr>
+                            {{for itemTD in registers[item]:}}
+                              <td>{{=itemTD}}</td>
+                            {{pass}}
+                          </tr>
+                          {{pass}}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <footer class="sticky-footer bg-white">
+              <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                  <span>Copyright © Your Website 2020</span>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </div>
+
+        <script src="{{=URL('static','js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{=URL('static','js/jquery.easing.min.js')}}"></script>
+        <script src="{{=URL('static','js/sb-admin-2.min.js')}}"></script>
+        <script src="{{=URL('static','js/datatables.min.js')}}"></script>
+
+        <script type="text/javascript">
+          $('#regTable').DataTable();
+        </script>
+        </body>
+    {{pass}}
+  </div>
+</div>
+
+
+
+
+

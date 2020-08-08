@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 
-'''## Main function called when enter to the main URL, the can have an argumen
+'''##function called when enter to the main URL, the can have an argumen
 	@args info: filename of file to be analyced
 	if the function does't have arguments, the view only will show a button for select a file to upload
 '''
@@ -18,9 +18,18 @@ def index():
 		return dict(data = DATA, metrics = METRICS, registers = REGISTERS, total = len(REGISTERS))
 	else:
 		return dict(status = STATUS, data = None)
+
+'''##Function for show the log file on a table
+'''
+def logvisor():
+	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
+	DATA, REGISTERS, METRICS, STATUS = analyceLogFile(PATH, {}, {}, {'HitMisBytes': {}})
+
+	return dict(registers = REGISTERS)
 	
 
-
+'''##Function allows to call the saveFileOnLocal on frontend with a POST request
+'''
 def uploadFile():
 	file = request.vars.file.file
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
@@ -32,13 +41,25 @@ def uploadFile():
 
 	return response.json({'status': STATUS})
 	
-'''
-Args:
+'''##Function Main function of analysis of data, this organizate the data on 4 main dictionaries:
 
-Return:
-	DATA							Will count the different coincidences arround the log file
-	REGISTERS						Save all the registers of the file and asign a index in the same order of has read
-	METRICS							Defined for different specific metrics calculated in analysis loop
+	DATA				Save the key coincidences arround the log file and add in a collection of they identifiers
+						this help to access to any value of the coincidence i.e.
+						
+						DATA['sc-content-type'] is a collection of registers whit the same 'sc-content-type' as
+
+						'application/dash+xml': [202, 220, ...], 'video/f4f': [246, 1002, ...], 'video/mp4': [875, 1118, ...], 'image/jpg': [979, 2141, ...], 'application/f4m+xml': [2060], 'application/x-mpegURL': [3676, 3956, 4268]}
+							
+
+
+
+
+	REGISTERS			Save all the registers of the file and asign a index in the same order of has read
+	METRICS				Defined for different specific metrics calculated in analysis loop
+
+	##args:
+
+	##return:
 '''
 def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 	file = open(PATH, 'r')
@@ -91,9 +112,12 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 	METRICS['csMethod'] = [(item, len(DATA['cs-protocol-version'][item])) for item in DATA['cs-protocol-version']]
 	METRICS['csMethod'].sort(key=lambda x: x[1])
 
+	print(METRICS['contentType'])
+
 	return (DATA, REGISTERS, METRICS, "OK")
 
-
+'''##Function allows to call the saveFileOnLocal on framework side with a POST request
+'''
 def saveFileOnLocal(PATH, file):
 
 	try:
