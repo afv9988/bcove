@@ -74,5 +74,5 @@ DATA, REGISTERS, METRICS, STATUS = app.analyceLogFile(PATH, {}, {}, {'HitMisByte
 
 assert "COLUMS_SIZE_NOT_MATCH" == STATUS
 
-if os.path.exists(PATH): os.remove(PATH)
-if os.path.exists('uploads/TMP-1.txt'): os.remove(PATH)
+#if os.path.exists(PATH): os.remove(PATH)
+#if os.path.exists('uploads/TMP-1.txt'): os.remove(PATH)
