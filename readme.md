@@ -20,9 +20,17 @@ For CI -CD use Travis CI for run unitary and integration test, trigguered in com
 
 ![alt text](https://travis-ci.org/afv9988/bcove.svg?branch=master)
 
-## Deploy with yalm files
+## Deploy in Kubernetes with yalm files
 
 You can use the yaml this files for deploy the application to Kubernetes instance:
 
 [Deploy](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/deployment.yaml).
 [Service](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/service.yaml).
+
+After import the yalm files you can acces to application via:
+
+[https://SERVER_IP:30000/](https://SERVER_IP:30000/)
+
+## Links
+Application: [https://afdev.ddns.net/](https://afdev.ddns.net/)
+Kubernetes Intance: [https://afdev.ddns.net:10443/#/login](https://afdev.ddns.net:10443/#/login)
