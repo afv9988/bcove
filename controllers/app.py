@@ -1,12 +1,13 @@
-#@auth.requires_login()
+#auth.requires_login()
 import shutil
 from datetime import datetime
 
 
 
-'''##Function called when enter to the main URL, the can have 2 arguments
-	@args DATA: filename of file to be analyced
-	@args API: 	flag for determine if the return state will be showed in a Front End or will return a JSON
+'''Function called when enter to the main URL, the can have 2 arguments
+	Args DATA: filename of file to be analyced
+	Args API: 	flag for determine if the return state will be showed in a Front End or will return a JSON
+
 	if the function does't have arguments, the view only will show a button for select a file to upload
 '''
 def index():
@@ -24,7 +25,7 @@ def index():
 		if API: response.json({"data": []})
 		return dict(status = STATUS, data = None)
 
-'''##Function Experimental function for show the log file on a table
+'''Function Experimental function for show the log file on a table
 '''
 def logvisor():
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
@@ -33,9 +34,9 @@ def logvisor():
 	return dict(registers = REGISTERS)
 	
 
-'''##Function allows to call the saveFileOnLocal on frontend with a POST request
+'''Function allows to call the saveFileOnLocal on frontend with a POST request
 
-	@ToDo:
+	ToDo:
 		Verify is the management of files per user i.e. using timestamps
 		#now = datetime.now()
 		#timestamp = datetime.timestamp(now)
@@ -50,9 +51,9 @@ def uploadFile():
 
 	return response.json({'status': STATUS})
 	
-'''##Function Main function of analysis of data, this organizate the data on 4 main dictionaries:
+'''Function Main function of analysis of data, this organizate the data on 4 main dictionaries:
 
-	##args:
+	Args:
 
 		REGISTERS			Save all the registers of the file and asign a index in the same order of has read i.e.
 
@@ -75,7 +76,7 @@ def uploadFile():
 
 	
 
-	##return: metrics in dictionaries
+	Returns: metrics in dictionaries
 '''
 def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 	file = open(PATH, 'r')
@@ -101,7 +102,7 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 		if not len(line) == len(colums):
 			return (None, None, None, "COLUMS_SIZE_NOT_MATCH")
 
-		
+
 		for index, item in enumerate(line):
 			if item == "-": item = "Undefined"
 			REGISTERS[nLine] = line
@@ -135,7 +136,7 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 
 	return (DATA, REGISTERS, METRICS, "OK")
 
-'''##Function allows to call the saveFileOnLocal on framework side with a POST request
+'''Function allows to call the saveFileOnLocal on framework side with a POST request
 '''
 def saveFileOnLocal(PATH, file):
 
@@ -146,5 +147,4 @@ def saveFileOnLocal(PATH, file):
 	except Exception as e:
 		return str(e)
 
-	#session.flash = "File uploaded"
 	return "OK"
