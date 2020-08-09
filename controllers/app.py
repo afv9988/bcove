@@ -5,10 +5,10 @@ from datetime import datetime
 
 
 '''Function called when enter to the main URL, the can have 2 arguments
-	Args DATA: filename of file to be analyced
+	Args DATA: filename of file to be analyzed
 	Args API: 	flag for determine if the return state will be showed in a Front End or will return a JSON
 
-	if the function does't have arguments, the view only will show a button for select a file to upload
+	If the function doesn't have arguments, the view only will show a button for select a file to upload
 '''
 def index():
 	DATA = request.args(0)
@@ -51,15 +51,15 @@ def uploadFile():
 
 	return response.json({'status': STATUS})
 	
-'''Function Main function of analysis of data, this organizate the data on 4 main dictionaries:
+'''Function Main function of analysis of data, this organize the data on 4 main dictionaries:
 
 	Args:
 
-		REGISTERS			Save all the registers of the file and asign a index in the same order of has read i.e.
+		REGISTERS			Save all the registers of the file and assign an index in the same order of has read i.e.
 
 							REGISTERS[1] = ["2020-06-14", "23:02:59", "LAX50-C1", ...]
 
-		DATA				Save the coincidences arround the log file as key and add in a collection the index of
+		DATA				Save the coincidences around the log file as key and add in a collection the index of
 							registers with same value, this help to access to any value of the coincidence i.e.
 							
 							DATA['sc-content-type'] is a collection of registers whit the same 'sc-content-type' as
@@ -87,18 +87,18 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 		return (None, None, None, "NO_VALID_FILE")
 
 	'''
-		This loop convert the second line of the log file in the keys of DATA dictionary,
-		colums will have the fiels name in order to be called with the index in order of aparition
+		This loop converts the second line of the log file in the keys of DATA dictionary,
+		columns will have the fields name in order to be called with the index in order of apparition
 	'''
 
 	DATA = {item:dict() for item in fieldLine[1][len("#Fields:")+1:].split(" ")}
 	colums = list(DATA.keys())
 
-	#Loop for convertion of current line into a array of values
+	#Loop for conversion of current line into an array of values
 	for nLine, line in enumerate(fieldLine[2:]):
 		line = line.replace('\n', '').split("\t")
 
-		#Verification of lines, all lines should have the same number of elements
+		#Validation of lines, all lines should have the same number of elements
 		if not len(line) == len(colums):
 			return (None, None, None, "COLUMS_SIZE_NOT_MATCH")
 
@@ -141,7 +141,8 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 
 	return (DATA, REGISTERS, METRICS, "OK")
 
-'''Function to save a file in aplication local folder (uploads)
+'''
+	Function to save a file in application local folder (uploads)
 '''
 def saveFileOnLocal(PATH, file):
 
