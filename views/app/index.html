@@ -103,19 +103,17 @@
                       <div class="card-body">
                         <div class="row no-gutters align-items-center">
                           <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Success Connections</div>
+                                {{
+                                  totalValue = (metrics['successFailed']['200'] / total) * 100
+                                  failed = total - metrics['successFailed']['200']
+                                }}
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{=format(totalValue, '.2f')}}% Success Connections</div>
                             <div class="row no-gutters align-items-center">
                               <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{=format(metrics['successFailed']['200'], ',')}} Conns.</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{=format(metrics['successFailed']['200'], ',')}} Success / {{=format(failed, ',')}} Failed</div>
                               </div>
-                              <div class="col">
-                                <div class="progress progress-sm mr-2">
-                                  {{
-                                    totalValue = (metrics['successFailed']['200'] / total) * 100
-                                  }}
-                                  <div class="progress-bar bg-info" role="progressbar" style="width: {{=totalValue}}%" aria-valuenow="{{=totalValue}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                              </div>
+
+
                             </div>
                           </div>
                           <div class="col-auto">
