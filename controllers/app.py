@@ -133,8 +133,6 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 	METRICS['csMethod'] = [(item, len(DATA['cs-protocol-version'][item])) for item in DATA['cs-protocol-version']]
 	METRICS['csMethod'].sort(key=lambda x: x[1])
 
-	print(DATA['x-edge-result-type']['Error'])
-
 
 	return (DATA, REGISTERS, METRICS, "OK")
 
