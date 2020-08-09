@@ -24,7 +24,7 @@ def index():
 		if API: response.json({"data": []})
 		return dict(status = STATUS, data = None)
 
-'''##Function for show the log file on a table
+'''##Function Experimental function for show the log file on a table
 '''
 def logvisor():
 	PATH = request.env.web2py_path+'/applications/'+request.application+'/uploads/files.txt'
@@ -36,7 +36,7 @@ def logvisor():
 '''##Function allows to call the saveFileOnLocal on frontend with a POST request
 
 	@ToDo:
-		Verify is if better manage more than 1 file per user
+		Verify is the management of files per user i.e. using timestamps
 		#now = datetime.now()
 		#timestamp = datetime.timestamp(now)
 		#filename=request.vars.file.filename
@@ -52,50 +52,56 @@ def uploadFile():
 	
 '''##Function Main function of analysis of data, this organizate the data on 4 main dictionaries:
 
-	REGISTERS			Save all the registers of the file and asign a index in the same order of has read i.e.
-
-						REGISTERS[1] = ["2020-06-14", "23:02:59", "LAX50-C1", ...]
-
-	DATA				Save the coincidences arround the log file as key and add in a collection the index of
-						registers with same value, this help to access to any value of the coincidence i.e.
-						
-						DATA['sc-content-type'] is a collection of registers whit the same 'sc-content-type' as
-
-						'application/dash+xml': [202, 220, ...], 'video/f4f': [246, 1002, ...], 'video/mp4': [875, 1118, ...],
-						'image/jpg': [979, 2141, ...], 'application/f4m+xml': [2060], 'application/x-mpegURL': [3676, 3956, ...]}
-
-						Then, you can access to any register with value 'application/dash+xml' as:
-
-						REGISTERS[ DATA['sc-content-type']['application/dash+xml'][0] ] return all the information of line 202
-
-
-	METRICS				Defined for different specific metrics calculated in analysis loop
-
 	##args:
 
-	##return:
+		REGISTERS			Save all the registers of the file and asign a index in the same order of has read i.e.
+
+							REGISTERS[1] = ["2020-06-14", "23:02:59", "LAX50-C1", ...]
+
+		DATA				Save the coincidences arround the log file as key and add in a collection the index of
+							registers with same value, this help to access to any value of the coincidence i.e.
+							
+							DATA['sc-content-type'] is a collection of registers whit the same 'sc-content-type' as
+
+							'application/dash+xml': [202, 220, ...], 'video/f4f': [246, 1002, ...], 'video/mp4': [875, 1118, ...],
+							'image/jpg': [979, 2141, ...], 'application/f4m+xml': [2060], 'application/x-mpegURL': [3676, 3956, ...]}
+
+							Then, you can access to any register with value 'application/dash+xml' as:
+
+							REGISTERS[ DATA['sc-content-type']['application/dash+xml'][0] ] return all the information of line 202
+
+
+		METRICS				Defined for different specific metrics calculated in analysis loop
+
+	
+
+	##return: metrics in dictionaries
 '''
 def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 	file = open(PATH, 'r')
 	fieldLine = file.readlines()
 
-	'''
-		This loop convert the second line of the log file in the keys of DATA dictionary,
-		then, colums will have the fiels name in order to be called with the index in order of aparition
-	'''
-
+	#Verification of Fields line
 	if not "#Fields:" in fieldLine[1]:
 		return (None, None, None, "NO_VALID_FILE")
+
+	'''
+		This loop convert the second line of the log file in the keys of DATA dictionary,
+		colums will have the fiels name in order to be called with the index in order of aparition
+	'''
 
 	DATA = {item:dict() for item in fieldLine[1][len("#Fields:")+1:].split(" ")}
 	colums = list(DATA.keys())
 
+	#Loop for convertion of current line into a array of values
 	for nLine, line in enumerate(fieldLine[2:]):
 		line = line.replace('\n', '').split("\t")
 
+		#Verification of lines, all lines should have the same number of elements
 		if not len(line) == len(colums):
 			return (None, None, None, "COLUMS_SIZE_NOT_MATCH")
 
+		
 		for index, item in enumerate(line):
 			if item == "-": item = "Undefined"
 			REGISTERS[nLine] = line

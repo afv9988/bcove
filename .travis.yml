@@ -3,9 +3,14 @@ language: python
 services:
   - docker
 
-before_install:
-  - docker pull afdev9988/w2p
-  - docker run -d -p 127.0.0.1:80:80 afdev9988/w2p /bin/sh -c "ls"
-
 script:
   - python3 unitests.py
+
+after_success:
+  - docker pull afdev9988/w2p
+  - docker run --name bcove_build -p 443:443 -p 80:80 -d afdev9988/w2p:latest 
+  - docker exec -it bcove_build /bin/bash -c ./applications/updater.sh
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker commit bcove_build afdev9988/w2p:testing
+  - docker push afdev9988/w2p:testing
+  - docker rm bcove_build
