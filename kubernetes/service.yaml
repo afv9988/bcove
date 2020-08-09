@@ -40,6 +40,7 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 443
+      nodePort: 443
   selector:
     k8s-app: w2p
   type: LoadBalancer

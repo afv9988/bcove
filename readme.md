@@ -1,15 +1,28 @@
+
 # bcove CDN Log Aggregator
 
-This is a web aplication for excecute an analysis of log files, showing the relevant information in tables and charts.
+![alt text](https://raw.githubusercontent.com/afv9988/bcove/master/static/images/FrontEnd.png)
 
-The information of the log file is procesed into a python dictionaries, trying to use only libraries includes in python by default for reduce compatibility isues.
+This is a web aplication for excecute an analysis of log files, showing the relevant information in charts and tables.
 
-Main functions of the aplication are isolated from the framework specific functionalities, in order to reduce the dependence in case of switch to another framework.
+The information of log file is procesed into a python dictionaries, trying to use only libraries includes in python by default for reduce compatibility issues.
+
 
 ## Web based
 
-This project use Python3 and web2py framework for web and REST services, is deploiment into a docker container: [Docker container](https://hub.docker.com/repository/docker/afdev9988/w2p) 
+This project use Python3 and Web2py framework for web and REST services, this is accesible via HTTPS. 
 
-For CI -CD use TravisCI for run unitary tests trigguered in comit to this repository, you can seek the status [here](https://travis-ci.org/github/afv9988/bcove)
+Main functions of the aplication are isolated from the framework specific functionalities, in order to reduce the dependence in case of switch to another framework.
 
-## Create files and folders
+deploiment into a docker container: 
+
+For CI -CD use Travis CI for run unitary and integration test, trigguered in commit repository, also deploy the new build to Build_30Build_30 you can seek the status of deployments [here](https://travis-ci.org/github/afv9988/bcove).
+
+![alt text](https://travis-ci.org/afv9988/bcove.svg?branch=master)
+
+## Deploy with yalm files
+
+You can use the yaml this files for deploy the application to Kubernetes instance:
+
+[Deploy](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/deployment.yaml).
+[Service](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/service.yaml).
