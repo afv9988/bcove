@@ -7,11 +7,11 @@ script:
   - python3 unitests.py
 
 after_success:
-  - docker pull $DOCKER_USERNAME/w2p
-  - docker run --name bcove_build -p 443:443 -p 80:80 -d $DOCKER_USERNAME/w2p:latest 
+  - docker pull afdev9988/w2p
+  - docker run --name bcove_build -p 443:443 -p 80:80 -d afdev9988/w2p:latest 
   - docker exec -it bcove_build /bin/bash -c ./applications/updater.sh
-  - echo '$DOCKER_PASSWORD' | docker login --username $DOCKER_USERNAME --password-stdin
-  - docker commit bcove_build $DOCKER_USERNAME/w2p:testing
-  - docker push $DOCKER_USERNAME/w2p:testing
+  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+  - docker commit bcove_build afdev9988/w2p:testing
+  - docker push afdev9988/w2p:testing
   - docker stop bcove_build
   - docker rm bcove_build
