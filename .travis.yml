@@ -7,7 +7,7 @@ script:
   - python3 unitests.py
 
 after_success:
-  - echo '$DOCKER_PASSWORD' | docker login --username $DOCKER_USERNAME --password-stdin
+  - echo '$DOCKER_PASSWORD' | docker login --username afdev9988 --password-stdin
   - docker pull afdev9988/w2p
   - docker run --name bcove_build -p 443:443 -p 80:80 -d afdev9988/w2p:latest 
   - docker exec -it bcove_build /bin/bash -c ./applications/updater.sh
