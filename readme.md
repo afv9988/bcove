@@ -14,7 +14,7 @@ This project use Python3 and Web2py framework for web and REST services, this is
 
 Main functions of the aplication are isolated from the framework specific functionalities, in order to reduce the dependence in case of switch to another framework.
 
-For CI -CD, this project use Travis CI for run unitary and integration tests, this are triggered when the Git repository receive a push request, also deploy the new build to [Docker Hub](https://hub.docker.com/repository/docker/afdev9988/w2p) you can seek the status of deployments [here](https://travis-ci.org/github/afv9988/bcove).
+For CI-CD pipeline, this project use Travis CI for run unitary and integration tests, this are triggered when the Git repository receive a push request, also, deploy the new build to [Docker Hub](https://hub.docker.com/repository/docker/afdev9988/w2p) you can seek the status of deployments [here](https://travis-ci.org/github/afv9988/bcove).
 
 ![alt text](https://travis-ci.org/afv9988/bcove.svg?branch=master)
 
@@ -22,8 +22,9 @@ For CI -CD, this project use Travis CI for run unitary and integration tests, th
 
 You can use this yaml files for deploy the application to Kubernetes instance:
 
-[Deploy](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/deployment.yaml).
-[Service](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/service.yaml).
+[Deploy](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/deployment.yaml)
+
+[Service](https://raw.githubusercontent.com/afv9988/bcove/master/kubernetes/service.yaml)
 
 After import the yaml files you can acces to application via:
 
@@ -31,4 +32,5 @@ After import the yaml files you can acces to application via:
 
 ## Links
 Application: [https://afdev.ddns.net/](https://afdev.ddns.net/)
+
 Kubernetes Intance: [https://afdev.ddns.net:10443/#/login](https://afdev.ddns.net:10443/#/login)

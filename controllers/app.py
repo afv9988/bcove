@@ -102,7 +102,7 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 		if not len(line) == len(colums):
 			return (None, None, None, "COLUMS_SIZE_NOT_MATCH")
 
-
+		#Main loop for calculate METRICS and fill REGISTERS and DATA
 		for index, item in enumerate(line):
 			if item == "-": item = "Undefined"
 			REGISTERS[nLine] = line
@@ -112,6 +112,11 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 				if not item in METRICS['HitMisBytes']: METRICS['HitMisBytes'][item] = 0
 				METRICS['HitMisBytes'][item] += int(line[31])
 			
+
+	'''
+		Calculation of metrics by different ways, all the data is hashing in python memory
+	'''
+
 
 	METRICS['successFailed'] = {item:len(DATA['sc-status'][item]) for item in DATA['sc-status']}
 
@@ -136,7 +141,7 @@ def analyceLogFile(PATH, DATA, REGISTERS, METRICS):
 
 	return (DATA, REGISTERS, METRICS, "OK")
 
-'''Function allows to call the saveFileOnLocal on framework side with a POST request
+'''Function to save a file in aplication local folder (uploads)
 '''
 def saveFileOnLocal(PATH, file):
 
