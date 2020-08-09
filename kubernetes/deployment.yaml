@@ -112,7 +112,7 @@ spec:
       name: w2p
     spec:
       containers:
-      - image: afdev9988/w2p:Build_30
+      - image: afdev9988/w2p:latest
         imagePullPolicy: Always
         name: w2p
         resources: {}
