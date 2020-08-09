@@ -23,7 +23,7 @@ metadata:
           'f:externalTrafficPolicy': {}
           'f:ports':
             .: {}
-            'k:{"port":80,"protocol":"TCP"}':
+            'k:{"port":443,"protocol":"TCP"}':
               .: {}
               'f:name': {}
               'f:port': {}
@@ -36,7 +36,7 @@ metadata:
           'f:type': {}
 spec:
   ports:
-    - name: tcp-80-80-gm2kc
+    - name: tcp-443-443-gm2kc
       protocol: TCP
       port: 443
       targetPort: 443
