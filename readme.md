@@ -1,5 +1,5 @@
 
-# bcove CDN Log Aggregator
+# CDN Log Aggregator
 
 ![alt text](https://raw.githubusercontent.com/afv9988/bcove/master/static/images/FrontEnd.png)
 
